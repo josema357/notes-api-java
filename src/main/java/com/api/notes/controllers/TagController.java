@@ -2,18 +2,22 @@ package com.api.notes.controllers;
 
 import com.api.notes.models.Tag;
 import com.api.notes.records.tag.CreateTagDTO;
+import com.api.notes.records.tag.GetAllTagsDTO;
 import com.api.notes.records.tag.ResponseTagDTO;
+import com.api.notes.records.tag.UpdateTagDTO;
 import com.api.notes.repositories.TagRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/tags")
@@ -33,9 +37,31 @@ public class TagController {
         ResponseTagDTO response = new ResponseTagDTO(
                 tag.getId(),
                 tag.getName(),
-                tag.getStatus()
-        );
-        URI uri = uriComponentsBuilder.path("/curso/{id}").buildAndExpand(tag.getId()).toUri();
+                tag.getStatus());
+        URI uri = uriComponentsBuilder.path("/tags/{id}").buildAndExpand(tag.getId()).toUri();
         return ResponseEntity.created(uri).body(response);
+    }
+    @GetMapping
+    public ResponseEntity<List<GetAllTagsDTO>> get_all_tag(
+            Pageable pagination,
+            @RequestParam(name = "offset", required = false) Integer offset,
+            @RequestParam(name = "limit", required = false) Integer limit){
+        if (offset != null && limit != null) {
+            pagination = PageRequest.of(offset, limit);
+        }
+        Page<Tag> tagsPage = tagRepository.findByStatusTrue(pagination);
+        List<GetAllTagsDTO> tagsListDTO = tagsPage.getContent().stream().map(GetAllTagsDTO::new).toList();
+        return ResponseEntity.ok(tagsListDTO);
+    }
+    @PutMapping("/{id}")
+    @Transactional
+    public ResponseEntity<?> update_tag(@PathVariable Long id, @RequestBody @Valid UpdateTagDTO updateTagDTO){
+        Tag tag = tagRepository.getReferenceById(id);
+        tag.updateTag(updateTagDTO);
+        ResponseTagDTO response = new ResponseTagDTO(
+                tag.getId(),
+                tag.getName(),
+                tag.getStatus());
+        return ResponseEntity.ok(response);
     }
 }

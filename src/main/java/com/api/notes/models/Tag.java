@@ -1,6 +1,7 @@
 package com.api.notes.models;
 
 import com.api.notes.records.tag.CreateTagDTO;
+import com.api.notes.records.tag.UpdateTagDTO;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,5 +20,13 @@ public class Tag {
     public Tag(CreateTagDTO createTagDTO){
         this.status=true;
         this.name=createTagDTO.name();
+    }
+    public void updateTag (UpdateTagDTO updateTagDTO){
+        if(updateTagDTO.name()!=null){
+            this.name= updateTagDTO.name();
+        }
+        if(updateTagDTO.status()!=null){
+            this.status= updateTagDTO.status();
+        }
     }
 }

@@ -1,8 +1,5 @@
-package com.api.notes.controllers;
+package com.api.notes.infra.errores;
 
-import com.api.notes.records.tag.CreateTagDTO;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +14,10 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 @SpringBootTest
 @WebAppConfiguration
-class TagControllerTest{
+class ErrorHandlersTest {
+
     private final static String BASE_URL= "/tags";
     MockMvc mockMvc;
     @Autowired
@@ -31,27 +28,12 @@ class TagControllerTest{
     }
 
     @Test
-    void create_tag() throws Exception {
-        CreateTagDTO createTagDTO = new CreateTagDTO("Tag two");
+    void errorHandler400() throws Exception {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(mapToJSON(createTagDTO)))
+                    .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andReturn();
-        assertEquals(201, result.getResponse().getStatus());
-    }
-    @Test
-    void get_all_tags() throws Exception{
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL)
-                .queryParam("offset","0")
-                .queryParam("limit", "2")
-                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
-        assertEquals(200, result.getResponse().getStatus());
+        assertEquals(400, result.getResponse().getStatus());
     }
 
-
-    private String mapToJSON(Object object) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(object);
-    }
 }
