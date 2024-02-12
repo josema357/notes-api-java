@@ -28,6 +28,12 @@ class ErrorHandlersTest {
     }
 
     @Test
+    void errorHandler404() throws Exception {
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL+"/2")
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+        assertEquals(404, result.getResponse().getStatus());
+    }
+    @Test
     void errorHandler400() throws Exception {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL)
                 .accept(MediaType.APPLICATION_JSON_VALUE)

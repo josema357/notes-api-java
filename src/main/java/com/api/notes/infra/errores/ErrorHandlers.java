@@ -1,6 +1,7 @@
 package com.api.notes.infra.errores;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
@@ -15,8 +16,11 @@ import java.util.Map;
 @RestControllerAdvice
 public class ErrorHandlers {
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<?> errorHandler404(){
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<?> errorHandler404(EntityNotFoundException exception){
+        Map<String,String> errorResponse = new HashMap<>();
+        String errorMessage = exception.getMessage();
+        errorResponse.put("message", errorMessage);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> errorHandler400(MethodArgumentNotValidException exception){

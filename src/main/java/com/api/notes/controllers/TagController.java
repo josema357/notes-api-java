@@ -53,6 +53,12 @@ public class TagController {
         List<GetAllTagsDTO> tagsListDTO = tagsPage.getContent().stream().map(GetAllTagsDTO::new).toList();
         return ResponseEntity.ok(tagsListDTO);
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<?> get_tag_by_id(@PathVariable Long id){
+        Tag tag = tagRepository.getReferenceById(id);
+        ResponseTagDTO data = new ResponseTagDTO((tag.getId()), tag.getName(), tag.getStatus());
+        return ResponseEntity.ok(data);
+    }
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<?> update_tag(@PathVariable Long id, @RequestBody @Valid UpdateTagDTO updateTagDTO){
@@ -63,5 +69,12 @@ public class TagController {
                 tag.getName(),
                 tag.getStatus());
         return ResponseEntity.ok(response);
+    }
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity<?> delete_tag(@PathVariable Long id){
+        Tag tag = tagRepository.getReferenceById(id);
+        tagRepository.delete(tag);
+        return ResponseEntity.noContent().build();
     }
 }

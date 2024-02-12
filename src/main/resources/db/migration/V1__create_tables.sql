@@ -2,9 +2,9 @@ CREATE TABLE `notes` (
   `id` int(11) NOT NULL,
   `title` varchar(250) NOT NULL,
   `content` text NOT NULL,
-  `tag` int(11) DEFAULT NULL,
-  `date_creation` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `date_update` timestamp NULL DEFAULT NULL,
+  `tag_id` int(11) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT NULL,
   `status` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -22,7 +22,7 @@ CREATE TABLE `tags` (
 --
 ALTER TABLE `notes`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `notes-tags` (`tag`);
+  ADD KEY `notes-tags` (`tag_id`);
 
 --
 -- Indices de la tabla `tag`
@@ -46,4 +46,4 @@ ALTER TABLE `tags`
 -- Filtros para la tabla `note`
 --
 ALTER TABLE `notes`
-  ADD CONSTRAINT `notes-tags` FOREIGN KEY (`tag`) REFERENCES `tags` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `notes-tags` FOREIGN KEY (`tag_id`) REFERENCES `tags` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
