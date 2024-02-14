@@ -36,6 +36,13 @@ public class ErrorHandlers {
         errorResponse.put("message",truncateMessage);
         return ResponseEntity.badRequest().body(errorResponse);
     }
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<?> errorHandler500(RuntimeException exception) {
+        Map<String, String> errorResponse = new HashMap<>();
+        String errorMessage = exception.getMessage();
+        errorResponse.put("message", errorMessage);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    }
 
     /**
      * DTO to show field and message on bad requests - 400
