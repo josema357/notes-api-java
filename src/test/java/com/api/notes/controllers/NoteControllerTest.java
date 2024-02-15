@@ -1,6 +1,7 @@
 package com.api.notes.controllers;
 
 import com.api.notes.records.note.CreateNoteDTO;
+import com.api.notes.records.note.UpdateNoteDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +35,7 @@ class NoteControllerTest {
 
     @Test
     void create_note () throws Exception {
-        CreateNoteDTO createNoteDTO = new CreateNoteDTO("test three", "test test test test", 3L);
+        CreateNoteDTO createNoteDTO = new CreateNoteDTO("test delete this", "test test test test", 3L);
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -53,6 +54,27 @@ class NoteControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
         Object responseObject = objectMapper.readValue(result.getResponse().getContentAsString(), Object.class);
         assertTrue(responseObject instanceof List);
+    }
+    @Test
+    void get_note_by_id() throws Exception{
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL+"/2")
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+        assertEquals(200, result.getResponse().getStatus());
+    }
+    @Test
+    void update_note() throws  Exception{
+        UpdateNoteDTO updateNoteDTO = new UpdateNoteDTO("notetestupdate","test test test update",4L, false);
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put(BASE_URL+"/1")
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(mapToJSON(updateNoteDTO))).andReturn();
+        assertEquals(200, result.getResponse().getStatus());
+    }
+    @Test
+    void delete_note() throws Exception {
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL+"/4")
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+        assertEquals(204, result.getResponse().getStatus());
     }
 
     private String mapToJSON(Object object) throws JsonProcessingException {

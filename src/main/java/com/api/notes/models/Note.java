@@ -1,6 +1,7 @@
 package com.api.notes.models;
 
 import com.api.notes.records.note.CreateNoteDTO;
+import com.api.notes.records.note.UpdateNoteDTO;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,5 +30,16 @@ public class Note {
     public Note (CreateNoteDTO createNoteDTO){
         this.title = createNoteDTO.title();
         this.content = createNoteDTO.content();
+    }
+    public void updateNote (UpdateNoteDTO updateNoteDTO){
+        if(updateNoteDTO.title()!=null){
+            this.title = updateNoteDTO.title();
+        }
+        if(updateNoteDTO.content()!=null){
+            this.content = updateNoteDTO.content();
+        }
+        if(updateNoteDTO.status()!=null){
+            this.status = updateNoteDTO.status();
+        }
     }
 }
